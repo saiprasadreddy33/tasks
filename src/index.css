@@ -1,0 +1,374 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    --background: 230 25% 97%;
+    --foreground: 230 25% 10%;
+
+    --card: 0 0% 100%;
+    --card-foreground: 230 25% 10%;
+
+    --popover: 0 0% 100%;
+    --popover-foreground: 230 25% 10%;
+
+    --primary: 250 85% 60%;
+    --primary-foreground: 0 0% 100%;
+    --primary-glow: 250 85% 70%;
+
+    --secondary: 230 20% 94%;
+    --secondary-foreground: 230 25% 20%;
+
+    --muted: 230 15% 92%;
+    --muted-foreground: 230 10% 45%;
+
+    --accent: 170 80% 45%;
+    --accent-foreground: 0 0% 100%;
+
+    --destructive: 0 75% 55%;
+    --destructive-foreground: 0 0% 100%;
+
+    --success: 145 70% 45%;
+    --success-foreground: 0 0% 100%;
+
+    --warning: 35 95% 55%;
+    --warning-foreground: 35 95% 15%;
+
+    --priority-high: 0 85% 60%;
+    --priority-medium: 35 95% 55%;
+    --priority-low: 200 80% 55%;
+
+    --border: 230 20% 90%;
+    --input: 230 20% 90%;
+    --ring: 250 85% 60%;
+
+    --radius: 1rem;
+
+    --gradient-primary: linear-gradient(135deg, hsl(250 85% 60%) 0%, hsl(280 80% 60%) 100%);
+    --gradient-accent: linear-gradient(135deg, hsl(170 80% 45%) 0%, hsl(200 80% 55%) 100%);
+    --gradient-bg: linear-gradient(180deg, hsl(230 25% 97%) 0%, hsl(240 20% 95%) 100%);
+
+    --sidebar-background: 0 0% 98%;
+    --sidebar-foreground: 240 5.3% 26.1%;
+    --sidebar-primary: 240 5.9% 10%;
+    --sidebar-primary-foreground: 0 0% 98%;
+    --sidebar-accent: 240 4.8% 95.9%;
+    --sidebar-accent-foreground: 240 5.9% 10%;
+    --sidebar-border: 220 13% 91%;
+    --sidebar-ring: 217.2 91.2% 59.8%;
+  }
+
+  .dark {
+    --background: 230 25% 8%;
+    --foreground: 0 0% 95%;
+
+    --card: 230 25% 12%;
+    --card-foreground: 0 0% 95%;
+
+    --popover: 230 25% 12%;
+    --popover-foreground: 0 0% 95%;
+
+    --primary: 250 85% 65%;
+    --primary-foreground: 0 0% 100%;
+    --primary-glow: 250 85% 75%;
+
+    --secondary: 230 20% 18%;
+    --secondary-foreground: 0 0% 85%;
+
+    --muted: 230 20% 16%;
+    --muted-foreground: 230 10% 55%;
+
+    --accent: 170 75% 50%;
+    --accent-foreground: 0 0% 100%;
+
+    --destructive: 0 70% 50%;
+    --destructive-foreground: 0 0% 100%;
+
+    --success: 145 65% 45%;
+    --success-foreground: 0 0% 100%;
+
+    --warning: 35 90% 50%;
+    --warning-foreground: 35 95% 10%;
+
+    --priority-high: 0 80% 55%;
+    --priority-medium: 35 90% 50%;
+    --priority-low: 200 75% 50%;
+
+    --border: 230 20% 20%;
+    --input: 230 20% 20%;
+    --ring: 250 85% 65%;
+
+    --gradient-primary: linear-gradient(135deg, hsl(250 85% 65%) 0%, hsl(280 75% 55%) 100%);
+    --gradient-accent: linear-gradient(135deg, hsl(170 75% 50%) 0%, hsl(200 75% 50%) 100%);
+    --gradient-bg: linear-gradient(180deg, hsl(230 25% 8%) 0%, hsl(240 25% 6%) 100%);
+
+    --sidebar-background: 230 25% 8%;
+    --sidebar-foreground: 240 4.8% 95.9%;
+    --sidebar-primary: 224.3 76.3% 48%;
+    --sidebar-primary-foreground: 0 0% 100%;
+    --sidebar-accent: 240 3.7% 15.9%;
+    --sidebar-accent-foreground: 240 4.8% 95.9%;
+    --sidebar-border: 230 20% 20%;
+    --sidebar-ring: 217.2 91.2% 59.8%;
+  }
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+
+  body {
+    @apply bg-background text-foreground antialiased;
+    font-family: 'Inter', system-ui, sans-serif;
+    background: var(--gradient-bg);
+    min-height: 100vh;
+  }
+}
+
+@layer components {
+  .glass {
+    @apply bg-card/80 backdrop-blur-xl border border-border/50;
+  }
+
+  .glass-strong {
+    @apply bg-card/95 backdrop-blur-2xl border border-border/60 shadow-xl;
+  }
+
+  .gradient-text {
+    background: var(--gradient-primary);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+
+  .gradient-border {
+    position: relative;
+  }
+
+  .gradient-border::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    padding: 1px;
+    border-radius: inherit;
+    background: var(--gradient-primary);
+    -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+    mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+    -webkit-mask-composite: xor;
+    mask-composite: exclude;
+  }
+
+  .scrollbar-none {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+  }
+
+  .scrollbar-none::-webkit-scrollbar {
+    display: none;
+  }
+}
+
+@layer utilities {
+  .task-enter {
+    animation: taskSlideIn 0.5s cubic-bezier(0.34, 1.56, 0.64, 1) both;
+    will-change: transform, opacity;
+  }
+
+  .task-exit {
+    animation: taskSlideOut 0.35s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+    pointer-events: none;
+    will-change: transform, opacity;
+  }
+
+  @keyframes taskSlideIn {
+    0% {
+      opacity: 0;
+      transform: translateY(20px) scale(0.92);
+    }
+    100% {
+      opacity: 1;
+      transform: translateY(0) scale(1);
+    }
+  }
+
+  @keyframes taskSlideOut {
+    0% {
+      opacity: 1;
+      transform: translateX(0) scale(1);
+    }
+    100% {
+      opacity: 0;
+      transform: translateX(40px) scale(0.85);
+    }
+  }
+
+  .task-dragging {
+    z-index: 99999;
+    box-shadow: 0 25px 50px -12px hsl(var(--foreground) / 0.25),
+      0 0 30px hsl(var(--primary) / 0.2);
+    will-change: transform;
+  }
+
+  .check-animate {
+    animation: checkPop 0.5s cubic-bezier(0.34, 1.56, 0.64, 1);
+  }
+
+  @keyframes checkPop {
+    0% {
+      transform: scale(1);
+    }
+    30% {
+      transform: scale(1.4);
+    }
+    60% {
+      transform: scale(0.85);
+    }
+    100% {
+      transform: scale(1);
+    }
+  }
+
+  .pulse-ring {
+    animation: pulseRing 1.5s ease-out infinite;
+  }
+
+  @keyframes pulseRing {
+    0% {
+      transform: scale(1);
+      opacity: 0.6;
+    }
+    100% {
+      transform: scale(2);
+      opacity: 0;
+    }
+  }
+
+  .float {
+    animation: float 5s ease-in-out infinite;
+  }
+
+  @keyframes float {
+    0%,
+    100% {
+      transform: translateY(0) rotate(0deg);
+    }
+    25% {
+      transform: translateY(-8px) rotate(1deg);
+    }
+    75% {
+      transform: translateY(-4px) rotate(-1deg);
+    }
+  }
+
+  .shimmer {
+    background: linear-gradient(90deg, transparent 0%, hsl(var(--primary) / 0.15) 50%, transparent 100%);
+    background-size: 200% 100%;
+    animation: shimmer 1.5s infinite;
+  }
+
+  @keyframes shimmer {
+    0% {
+      background-position: -200% 0;
+    }
+    100% {
+      background-position: 200% 0;
+    }
+  }
+
+  .glow {
+    box-shadow: 0 0 20px hsl(var(--primary) / 0.4), 0 0 40px hsl(var(--primary) / 0.15),
+      0 0 60px hsl(var(--primary) / 0.05);
+  }
+
+  .glow-accent {
+    box-shadow: 0 0 20px hsl(var(--accent) / 0.4), 0 0 40px hsl(var(--accent) / 0.15);
+  }
+
+  .number-pop {
+    animation: numberPop 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+  }
+
+  @keyframes numberPop {
+    0% {
+      transform: scale(1);
+    }
+    50% {
+      transform: scale(1.25);
+    }
+    100% {
+      transform: scale(1);
+    }
+  }
+
+  .shake {
+    animation: shake 0.6s cubic-bezier(0.36, 0.07, 0.19, 0.97);
+  }
+
+  @keyframes shake {
+    0%,
+    100% {
+      transform: translateX(0);
+    }
+    10%,
+    30%,
+    50%,
+    70%,
+    90% {
+      transform: translateX(-5px);
+    }
+    20%,
+    40%,
+    60%,
+    80% {
+      transform: translateX(5px);
+    }
+  }
+
+  .success-flash {
+    animation: successFlash 0.7s ease-out;
+  }
+
+  @keyframes successFlash {
+    0% {
+      background-color: hsl(var(--success) / 0.25);
+      box-shadow: 0 0 20px hsl(var(--success) / 0.3);
+    }
+    100% {
+      background-color: transparent;
+      box-shadow: none;
+    }
+  }
+
+  .stagger-1 {
+    animation-delay: 0.05s;
+  }
+  .stagger-2 {
+    animation-delay: 0.1s;
+  }
+  .stagger-3 {
+    animation-delay: 0.15s;
+  }
+  .stagger-4 {
+    animation-delay: 0.2s;
+  }
+  .stagger-5 {
+    animation-delay: 0.25s;
+  }
+  .stagger-6 {
+    animation-delay: 0.3s;
+  }
+  .stagger-7 {
+    animation-delay: 0.35s;
+  }
+  .stagger-8 {
+    animation-delay: 0.4s;
+  }
+  .stagger-9 {
+    animation-delay: 0.45s;
+  }
+  .stagger-10 {
+    animation-delay: 0.5s;
+  }
+}
