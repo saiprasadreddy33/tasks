@@ -37,6 +37,18 @@ const TaskInput = memo(function TaskInput() {
         return;
       }
 
+      if (trimmed.length <= 7) {
+        setError("<= 7 letters");
+        toast({
+          variant: "destructive",
+          title: "<= 7 letters",
+          description: "Task must be at least 8 characters.",
+        });
+        inputRef.current?.focus();
+        setTimeout(() => setError(""), 2000);
+        return;
+      }
+
       const added = addTask(trimmed, priority, dueDate || null);
       if (added) {
         setValue("");

@@ -13,7 +13,7 @@ function useLocalStorage<T>(key: string, initialValue: T): [T, SetValue<T>] {
     }
   }, [initialValue, key]);
 
-  const [value, setValueState] = useState<T>(() => read());
+  const [value, setValueState] = useState<T>(read);
 
   const setValue = useCallback<SetValue<T>>(
     (next) => {
@@ -30,9 +30,9 @@ function useLocalStorage<T>(key: string, initialValue: T): [T, SetValue<T>] {
     [key]
   );
 
-  useEffect(() => {
-    setValueState(read());
-  }, [read]);
+  // useEffect(() => {
+  //   setValueState(read());
+  // }, [read]);
 
   useEffect(() => {
     const onStorage = (e: StorageEvent) => {

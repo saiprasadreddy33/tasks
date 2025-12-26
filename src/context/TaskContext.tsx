@@ -1,7 +1,9 @@
-import React, { createContext, useContext, useCallback, useMemo } from "react";
+import React, { createContext, useContext, useCallback, useMemo,useState,useRef } from "react";
 import { Task, FilterType, Priority, SortType } from "@/types/task";
 import useLocalStorage from "@/hooks/useLocalStorage";
 import { toast } from "@/hooks/use-toast";
+
+type LastDeleted = { task: Task; index: number };
 
 interface TaskContextType {
   tasks: Task[];
@@ -12,6 +14,8 @@ interface TaskContextType {
   addTask: (text: string, priority: Priority, dueDate: string | null) => boolean;
   toggleTask: (id: string) => void;
   deleteTask: (id: string) => void;
+  lastDeleted: LastDeleted | null;
+  undoDelete: () => void;
   setFilter: (filter: FilterType) => void;
   setSortBy: (sort: SortType) => void;
   setSearchQuery: (query: string) => void;
@@ -33,6 +37,9 @@ export function TaskProvider({ children }: { children: React.ReactNode }) {
   const [filter, setFilter] = useLocalStorage<FilterType>("taskflow-filter", "all");
   const [sortBy, setSortBy] = useLocalStorage<SortType>("taskflow-sort", "created");
   const [searchQuery, setSearchQuery] = React.useState("");
+  const [lastDeleted, setLastDeleted] = useState<LastDeleted | null>(null);
+  const undoTime = useRef<number | null>(null);
+
 
   React.useEffect(() => {
     try {
@@ -58,7 +65,7 @@ export function TaskProvider({ children }: { children: React.ReactNode }) {
     (text: string, priority: Priority, dueDate: string | null): boolean => {
       const trimmedText = text.trim();
       if (!trimmedText) return false;
-
+      if (trimmedText.length <= 7) return false;
       const newTask: Task = {
         id: crypto?.randomUUID?.() ?? `${Date.now()}-${Math.random().toString(16).slice(2)}`,
         text: trimmedText,
@@ -91,13 +98,45 @@ export function TaskProvider({ children }: { children: React.ReactNode }) {
     },
     [setTasks]
   );
-
   const deleteTask = useCallback(
     (id: string) => {
-      setTasks((prev) => prev.filter((task) => task.id !== id));
+      setTasks((prev) => {
+        const index = prev.findIndex((t) => t.id === id);
+        if (index === -1) return prev;
+
+        const task = prev[index];
+        setLastDeleted({ task, index });
+
+        if (undoTime.current) {
+          clearTimeout(undoTime.current);
+        }
+        undoTime.current = window.setTimeout(() => {
+          setLastDeleted(null);
+          undoTime.current = null;
+        }, 5000);
+
+        return prev.filter((t) => t.id !== id);
+      });
     },
     [setTasks]
   );
+
+  const undoDelete = useCallback(() => {
+    if (!lastDeleted) return;
+
+    setTasks((prev) => {
+      const next = [...prev];
+      const insertAt = Math.min(lastDeleted.index, next.length);
+      next.splice(insertAt, 0, lastDeleted.task);
+      return next;
+    });
+    setLastDeleted(null);
+
+    if (undoTime.current) {
+      clearTimeout(undoTime.current);
+      undoTime.current = null;
+    }
+  }, [lastDeleted, setTasks]);
 
   const reorderTasks = useCallback(
     (startIndex: number, endIndex: number) => {
@@ -205,6 +244,8 @@ export function TaskProvider({ children }: { children: React.ReactNode }) {
       addTask,
       toggleTask,
       deleteTask,
+      undoDelete,
+      lastDeleted,
       setFilter,
       setSortBy,
       setSearchQuery,
@@ -221,6 +262,8 @@ export function TaskProvider({ children }: { children: React.ReactNode }) {
       addTask,
       toggleTask,
       deleteTask,
+      undoDelete,
+      lastDeleted,
       setFilter,
       setSortBy,
       setSearchQuery,

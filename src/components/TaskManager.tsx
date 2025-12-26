@@ -4,6 +4,7 @@ import TaskInput from "./TaskInput";
 import TaskFilter from "./TaskFilter";
 import TaskList from "./TaskList";
 import TaskStats from "./TaskStats";
+import UndoBanner from "./UndoBanner";
 import ThemeToggle from "./ThemeToggle";
 import useTheme from "@/hooks/useTheme";
 import { Zap, GripVertical } from "lucide-react";
@@ -33,6 +34,7 @@ const TaskManagerContent = memo(function TaskManagerContent() {
         </header>
 
         <main className="space-y-5 sm:space-y-8">
+          <UndoBanner />
           <TaskInput />
           <TaskStats />
           <TaskFilter />
