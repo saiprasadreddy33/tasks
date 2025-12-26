@@ -1,6 +1,7 @@
 import React, { createContext, useContext, useCallback, useMemo } from "react";
 import { Task, FilterType, Priority, SortType } from "@/types/task";
 import useLocalStorage from "@/hooks/useLocalStorage";
+import { toast } from "@/hooks/use-toast";
 
 interface TaskContextType {
   tasks: Task[];
@@ -33,13 +34,33 @@ export function TaskProvider({ children }: { children: React.ReactNode }) {
   const [sortBy, setSortBy] = useLocalStorage<SortType>("taskflow-sort", "created");
   const [searchQuery, setSearchQuery] = React.useState("");
 
+  React.useEffect(() => {
+    try {
+      const raw = window.localStorage.getItem("taskflow-tasks");
+      if (!raw) return;
+      const parsed = JSON.parse(raw) as unknown;
+      const count = Array.isArray(parsed) ? parsed.length : tasks.length;
+
+      if (count > 0) {
+        toast({
+          title: "Tasks restored",
+          description: `Loaded ${count} ${count === 1 ? "task" : "tasks"} from local storage.`,
+        });
+      }
+    } catch {
+      // ignore
+    }
+    // run once on mount
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
   const addTask = useCallback(
     (text: string, priority: Priority, dueDate: string | null): boolean => {
       const trimmedText = text.trim();
       if (!trimmedText) return false;
 
       const newTask: Task = {
-        id: crypto.randomUUID(),
+        id: crypto?.randomUUID?.() ?? `${Date.now()}-${Math.random().toString(16).slice(2)}`,
         text: trimmedText,
         completed: false,
         priority,

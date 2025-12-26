@@ -22,6 +22,7 @@ function useLocalStorage<T>(key: string, initialValue: T): [T, SetValue<T>] {
         try {
           window.localStorage.setItem(key, JSON.stringify(resolved));
         } catch {
+          // Ignore write errors (private mode, quota exceeded, etc.)
         }
         return resolved;
       });
