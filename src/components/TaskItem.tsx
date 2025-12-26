@@ -3,6 +3,7 @@ import { Trash2, GripVertical, Check } from "lucide-react";
 import { Task } from "@/types/task";
 import { useTaskContext } from "@/context/TaskContext";
 import { DraggableProvided } from "react-beautiful-dnd";
+import { toast } from "@/hooks/use-toast";
 
 interface TaskItemProps {
   task: Task;
@@ -19,14 +20,22 @@ const TaskItem = memo(function TaskItem({ task, provided, isDragging, index }: T
 
   const handleToggle = useCallback(() => {
     toggleTask(task.id);
-  }, [task.id, task.completed, toggleTask]);
+    toast({
+      title: task.completed ? "Marked as pending" : "Task completed",
+      description: task.text.length > 80 ? `${task.text.slice(0, 77)}...` : task.text,
+    });
+  }, [task.completed, task.id, task.text, toggleTask]);
 
   const handleDelete = useCallback(() => {
     setIsExiting(true);
     setTimeout(() => {
       deleteTask(task.id);
+      toast({
+        title: "Task deleted",
+        description: task.text.length > 80 ? `${task.text.slice(0, 77)}...` : task.text,
+      });
     }, 350);
-  }, [task.id, deleteTask]);
+  }, [task.id, task.text, deleteTask]);
 
   const motionClass = isDragging
     ? ""
@@ -34,7 +43,7 @@ const TaskItem = memo(function TaskItem({ task, provided, isDragging, index }: T
       ? "task-exit"
       : `task-enter ${staggerClass}`;
 
-  const baseZIndex = (provided.draggableProps.style as any)?.zIndex;
+  const baseZIndex = (provided.draggableProps.style as React.CSSProperties | undefined)?.zIndex;
 
   return (
     <div

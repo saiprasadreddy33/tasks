@@ -2,11 +2,12 @@ import React, { memo, useCallback } from "react";
 import { Search, SlidersHorizontal, Trash2, X } from "lucide-react";
 import { FilterType, SortType } from "@/types/task";
 import { useTaskContext } from "@/context/TaskContext";
+import { toast } from "@/hooks/use-toast";
 
 const filters: { value: FilterType; label: string }[] = [
   { value: "all", label: "All" },
-  { value: "pending", label: "Active" },
-  { value: "completed", label: "Done" },
+  { value: "pending", label: "Pending" },
+  { value: "completed", label: "Completed" },
 ];
 
 const sorts: { value: SortType; label: string }[] = [
@@ -59,7 +60,14 @@ const TaskFilter = memo(function TaskFilter() {
           {filters.map(({ value, label }) => (
             <button
               key={value}
-              onClick={() => setFilter(value)}
+              onClick={() => {
+                if (filter === value) return;
+                setFilter(value);
+                toast({
+                  title: "Filter updated",
+                  description: `Showing ${label.toLowerCase()} tasks.`,
+                });
+              }}
               className={`relative flex shrink-0 items-center gap-1.5 rounded-lg px-3 py-1.5 text-sm font-medium transition-all duration-200 sm:gap-2 sm:px-4 sm:py-2 ${
                 filter === value
                   ? "bg-card text-foreground shadow-soft"
@@ -98,7 +106,14 @@ const TaskFilter = memo(function TaskFilter() {
 
           {stats.completed > 0 && (
             <button
-              onClick={clearCompleted}
+              onClick={() => {
+                const clearedCount = stats.completed;
+                clearCompleted();
+                toast({
+                  title: "Completed tasks cleared",
+                  description: `Removed ${clearedCount} completed ${clearedCount === 1 ? "task" : "tasks"}.`,
+                });
+              }}
               className="flex shrink-0 items-center gap-1 rounded-lg px-2.5 py-1.5 text-[11px] font-medium text-muted-foreground transition-all duration-200 hover:bg-destructive/10 hover:text-destructive sm:gap-1.5 sm:px-3 sm:py-2 sm:text-xs"
             >
               <Trash2 className="h-3 w-3 sm:h-3.5 sm:w-3.5" />

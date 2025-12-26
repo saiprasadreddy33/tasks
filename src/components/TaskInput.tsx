@@ -2,6 +2,7 @@ import React, { memo, useState, useCallback, useRef, useEffect } from "react";
 import { Plus, Calendar, Flag, X, Check, AlertCircle } from "lucide-react";
 import { useTaskContext } from "@/context/TaskContext";
 import { Priority } from "@/types/task";
+import { toast } from "@/hooks/use-toast";
 
 const priorityConfig: Record<Priority, { label: string; color: string; bg: string }> = {
   high: { label: "High", color: "text-priority-high", bg: "bg-priority-high/10" },
@@ -26,6 +27,11 @@ const TaskInput = memo(function TaskInput() {
 
       if (!trimmed) {
         setError("Please enter a task");
+        toast({
+          variant: "destructive",
+          title: "Task can't be empty",
+          description: "Type something before adding.",
+        });
         inputRef.current?.focus();
         setTimeout(() => setError(""), 2000);
         return;
@@ -38,6 +44,10 @@ const TaskInput = memo(function TaskInput() {
         setPriority("medium");
         setShowOptions(false);
         setSuccess(true);
+        toast({
+          title: "Task added",
+          description: trimmed.length > 80 ? `${trimmed.slice(0, 77)}...` : trimmed,
+        });
         setTimeout(() => setSuccess(false), 1500);
       }
     },
